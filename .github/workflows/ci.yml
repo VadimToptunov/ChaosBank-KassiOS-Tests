@@ -9,11 +9,21 @@ on:
 jobs:
   ui-tests:
     name: KassiOS ⨯ ChaosBank (simulator)
-    runs-on: macos-15
+    # ChaosBank is written "main actor by default"
+    # (SWIFT_DEFAULT_ACTOR_ISOLATION), which needs Xcode 26+. Pick the newest
+    # Xcode on the image, matching ChaosBank's own CI.
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: Select newest Xcode
+        run: |
+          LATEST=$(ls -d /Applications/Xcode*.app | sort -V | tail -1)
+          echo "Using $LATEST"
+          sudo xcode-select -s "$LATEST"
+          xcodebuild -version
 
       - name: Install xcodeproj
         run: sudo gem install xcodeproj
