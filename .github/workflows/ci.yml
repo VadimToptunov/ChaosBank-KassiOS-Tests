@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ui-tests:
+    name: KassiOS ⨯ ChaosBank (simulator)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install xcodeproj
+        run: sudo gem install xcodeproj
+
+      - name: Generate the integration project
+        run: ruby gen.rb
+
+      - name: Pick an available iPhone simulator
+        id: sim
+        run: |
+          UDID=$(xcrun simctl list devices available | grep -m1 -E 'iPhone [0-9]+ Pro ' | grep -oE '[0-9A-Fa-f-]{36}')
+          [ -z "$UDID" ] && UDID=$(xcrun simctl list devices available | grep -m1 'iPhone' | grep -oE '[0-9A-Fa-f-]{36}')
+          echo "Using simulator $UDID"
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+
+      - name: Run the KassiOS UI tests against ChaosBank (clean profile)
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project ChaosBankKassiOS.xcodeproj \
+            -scheme ChaosBankKassiOSUITests \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -retry-tests-on-failure \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee xcodebuild.log | tail -120

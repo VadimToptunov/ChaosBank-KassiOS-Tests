@@ -1,0 +1,6 @@
+[submodule "vendor/ChaosBank"]
+	path = vendor/ChaosBank
+	url = https://github.com/VadimToptunov/ChaosBank-iOS.git
+[submodule "vendor/KassiOS"]
+	path = vendor/KassiOS
+	url = https://github.com/VadimToptunov/KassiOS.git
