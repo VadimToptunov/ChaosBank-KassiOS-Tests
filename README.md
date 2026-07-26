@@ -57,6 +57,21 @@ builds. The suite asserts *correct* behaviour, so:
   (Per-test launch arguments like `-ChaosBankProfile <id>` / `-ChaosBankDefects
   <id,…>` are documented in ChaosBank's README.)
 
+- **Re-run the whole suite against a defect build — no test edits.** `launchUnlocked`
+  forwards `CB_INJECT_DEFECTS` / `CB_INJECT_PROFILE` from the runner environment,
+  which Xcode populates from `TEST_RUNNER_`-prefixed variables. So the clean-pass
+  flows can be flipped red in one command:
+
+  ```bash
+  TEST_RUNNER_CB_INJECT_DEFECTS=wrongA11yLabel,cardToggleInvert,cardCvvVisible \
+  xcodebuild test -project ChaosBankKassiOS.xcodeproj -scheme ChaosBankKassiOSUITests \
+    -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO
+  ```
+
+  Verified: the Order and Card tests go red under exactly their defects
+  (`wrongA11yLabel`, `limitValidation`, `orderStuckPending`, `cardToggleInvert`,
+  `cardCvvVisible`) — the dogfooding contract, proven end to end.
+
 ## Coverage
 
 | Area | Tests |
@@ -69,6 +84,8 @@ builds. The suite asserts *correct* behaviour, so:
 | **Portfolio** | total value + P&L + holdings list |
 | **Card** | freeze → FROZEN badge (catches `cardToggleInvert`); CVV hidden on the face (catches `cardCvvVisible`) |
 | **Transactions** | open from "See all activity" → list, count, search |
+| **Order** | Buy button labelled "Buy" (catches `wrongA11yLabel`); qty 0 disables Review (catches `limitValidation`); place → "Order filled" (catches `orderStuckPending`) |
+| **Loans** | Card → "Explore a loan" → APR / monthly / total |
 
 > Follow-up: the full auth ladder (the deliberately-hostile WKWebView login →
 > OTP `424242` → passcode) only appears on re-lock, not a fresh launch, so it

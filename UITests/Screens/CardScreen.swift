@@ -13,6 +13,7 @@ final class CardScreen: CBScreen {
     lazy var freezeToggle = switchControl("card.freezeToggle")
     lazy var onlinePaymentsToggle = switchControl("card.onlinePaymentsToggle")
     lazy var virtualButton = button("card.virtualButton")
+    lazy var loanButton = button("card.loanButton")     // → Loans screen
 
     private func visualText(labelContains substring: String) -> KassElement {
         custom("card.visual text ~ '\(substring)'") { [app] in

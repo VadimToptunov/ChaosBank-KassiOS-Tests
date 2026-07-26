@@ -14,6 +14,14 @@ class CBTestCase: KassTestCase {
         var args = ["-ChaosBankStartUnlocked", "1"]
         if let tab = tab { args += ["-ChaosBankTab", tab] }
         if let profile = profile { args += ["-ChaosBankProfile", profile] }
+
+        // Buggy-matrix hook: re-run the whole clean suite against a defect build
+        // without editing any test, to prove the clean-pass flows go red. Set
+        // `TEST_RUNNER_CB_INJECT_DEFECTS=a,b` (or `..._PROFILE=validation`) on the
+        // xcodebuild invocation — Xcode forwards it into the runner (prefix stripped).
+        let env = ProcessInfo.processInfo.environment
+        if let d = env["CB_INJECT_DEFECTS"], !d.isEmpty { args += ["-ChaosBankDefects", d] }
+        if let p = env["CB_INJECT_PROFILE"], !p.isEmpty { args += ["-ChaosBankProfile", p] }
         return launch(arguments: args)
     }
 }
