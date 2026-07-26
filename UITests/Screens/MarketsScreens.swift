@@ -22,6 +22,19 @@ final class MarketsScreen: CBScreen {
     /// The price cell for `symbol` — proof the row is present.
     func price(_ symbol: String) -> KassElement { anyEl("markets.asset.\(symbol).price") }
 
+    /// The whole asset **cell** by its per-symbol id. The UIKit "views" build sets
+    /// `markets.asset.<SYMBOL>` on the `UITableViewCell` itself, so this both
+    /// proves presence and is tappable there.
+    func assetCell(_ symbol: String) -> KassElement { anyEl("markets.asset.\(symbol)") }
+
+    /// The order confirmation dialog raised by tapping a row in the UIKit build
+    /// ("Buy AAPL at $…?"), matched by its message substring.
+    func orderDialog(contains substring: String) -> KassElement {
+        custom("order dialog ~ '\(substring)'") { [app] in
+            app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] %@", substring)).firstMatch
+        }
+    }
+
     override var onLoad: [KassElement] { [root] }
 }
 

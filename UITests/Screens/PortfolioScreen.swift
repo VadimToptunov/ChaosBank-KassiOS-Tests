@@ -9,5 +9,8 @@ final class PortfolioScreen: CBScreen {
     lazy var allocationBar = anyEl("portfolio.allocationBar")
     lazy var list = anyEl("portfolio.list")
 
+    /// A holding row by its per-symbol locator (`portfolio.holding.<SYMBOL>`).
+    func holding(_ symbol: String) -> KassElement { anyEl("portfolio.holding.\(symbol)") }
+
     override var onLoad: [KassElement] { [totalValue] }
 }

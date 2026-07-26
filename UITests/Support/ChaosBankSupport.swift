@@ -25,6 +25,23 @@ class CBTestCase: KassTestCase {
         return launch(arguments: args)
     }
 
+    /// Boots the alternate **UIKit "views" build** unlocked (`-ChaosBankUIKit 1`).
+    /// Same screens/locators as the SwiftUI build — the imperative-UI reference
+    /// suite reuses the SwiftUI screen objects and asserts identical clean
+    /// behaviour, so the buggy-matrix can drive the UIKit-characteristic defects
+    /// (target-action wiring, `bindingAdapterPosition`, initial toggle binding…)
+    /// red without editing a single test.
+    @discardableResult
+    func launchUIKit(tab: String? = nil, profile: String? = nil) -> XCUIApplication {
+        var args = ["-ChaosBankStartUnlocked", "1", "-ChaosBankUIKit", "1"]
+        if let tab = tab { args += ["-ChaosBankTab", tab] }
+        if let profile = profile { args += ["-ChaosBankProfile", profile] }
+        let env = ProcessInfo.processInfo.environment
+        if let d = env["CB_INJECT_DEFECTS"], !d.isEmpty { args += ["-ChaosBankDefects", d] }
+        if let p = env["CB_INJECT_PROFILE"], !p.isEmpty { args += ["-ChaosBankProfile", p] }
+        return launch(arguments: args)
+    }
+
     /// Fresh, *locked* launch — no `-ChaosBankStartUnlocked`, so the app opens on
     /// the auth ladder. Still forwards the buggy-matrix injection hook.
     @discardableResult

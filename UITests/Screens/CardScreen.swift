@@ -14,6 +14,19 @@ final class CardScreen: CBScreen {
     lazy var onlinePaymentsToggle = switchControl("card.onlinePaymentsToggle")
     lazy var virtualButton = button("card.virtualButton")
     lazy var loanButton = button("card.loanButton")     // → Loans screen
+    lazy var limitField = textField("card.limitField")
+    lazy var limitError = anyEl("card.limitError")
+    /// The field's built-in clear button (its only child button), locale-independent.
+    var limitClearButton: KassElement {
+        custom("card.limitField clear button") { [app] in
+            app.textFields["card.limitField"].buttons.firstMatch
+        }
+    }
+
+    /// The FROZEN badge under its own identifier. The UIKit "views" build sets
+    /// `card.frozenBadge` on a dedicated label; the SwiftUI build shadows it under
+    /// `card.visual` (use `frozenBadge` above for that build).
+    lazy var frozenBadgeUIKit = anyEl("card.frozenBadge")
 
     private func visualText(labelContains substring: String) -> KassElement {
         custom("card.visual text ~ '\(substring)'") { [app] in

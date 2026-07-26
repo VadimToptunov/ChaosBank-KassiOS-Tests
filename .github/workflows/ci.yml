@@ -72,3 +72,26 @@ jobs:
           echo "defect-caught test failures: $fails (expected 5)"
           [ "$fails" -eq 5 ] || { echo "::error::expected 5 tests to fail under their defects, saw $fails (build error?)"; exit 1; }
           echo "✓ all 5 clean-pass flows went red under exactly their defects"
+
+      # Same contract for the UIKit "views" build: each UIKitViewsTests case is a
+      # clean-pass on -ChaosBankUIKit 1 and must go red under its own
+      # UIKit-characteristic defect. All ten are injected together; every test
+      # still fails under (at least) its own defect, so exactly ten go red.
+      - name: Buggy-matrix — UIKit views build must go red under its defects
+        env:
+          CB_DEFECTS: toggleInitialStateNotBound,switchChangeNotHandled,fieldEditNotCommitted,controlActionNotWired,listNotClearedOnReload,rowTapOpensWrongItem,labelNotFormatted,rowLocatorMissing,submitEnabledWhenInvalid,outputNotRecomputed
+        run: |
+          set -o pipefail
+          if TEST_RUNNER_CB_INJECT_DEFECTS="$CB_DEFECTS" xcodebuild test \
+              -project ChaosBankKassiOS.xcodeproj \
+              -scheme ChaosBankKassiOSUITests \
+              -destination "id=${{ steps.sim.outputs.udid }}" \
+              -only-testing:ChaosBankKassiOSUITests/UIKitViewsTests \
+              CODE_SIGNING_ALLOWED=NO 2>&1 | tee buggy-uikit.log | tail -80; then
+            echo "::error::UIKit defect build stayed green — the dogfooding contract is broken"
+            exit 1
+          fi
+          fails=$(grep -c 'failed (.*seconds)' buggy-uikit.log || true)
+          echo "defect-caught UIKit test failures: $fails (expected 10)"
+          [ "$fails" -eq 10 ] || { echo "::error::expected 10 UIKit tests to fail under their defects, saw $fails (build error?)"; exit 1; }
+          echo "✓ all 10 UIKit clean-pass flows went red under their defects"
