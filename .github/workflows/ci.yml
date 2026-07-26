@@ -49,3 +49,26 @@ jobs:
             -retry-tests-on-failure \
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee xcodebuild.log | tail -120
+
+      # Dogfooding contract, enforced: the clean-pass flows must go RED under
+      # their defects (injected via the runner env, no test edits). A green defect
+      # build — or a build error that yields zero test failures — fails the job.
+      - name: Buggy-matrix — clean-pass flows must go red under their defects
+        env:
+          CB_DEFECTS: wrongA11yLabel,limitValidation,orderStuckPending,cardToggleInvert,cardCvvVisible
+        run: |
+          set -o pipefail
+          if TEST_RUNNER_CB_INJECT_DEFECTS="$CB_DEFECTS" xcodebuild test \
+              -project ChaosBankKassiOS.xcodeproj \
+              -scheme ChaosBankKassiOSUITests \
+              -destination "id=${{ steps.sim.outputs.udid }}" \
+              -only-testing:ChaosBankKassiOSUITests/OrderTests \
+              -only-testing:ChaosBankKassiOSUITests/CardTests \
+              CODE_SIGNING_ALLOWED=NO 2>&1 | tee buggy.log | tail -60; then
+            echo "::error::defect build stayed green — the dogfooding contract is broken"
+            exit 1
+          fi
+          fails=$(grep -c 'failed (.*seconds)' buggy.log || true)
+          echo "defect-caught test failures: $fails (expected 5)"
+          [ "$fails" -eq 5 ] || { echo "::error::expected 5 tests to fail under their defects, saw $fails (build error?)"; exit 1; }
+          echo "✓ all 5 clean-pass flows went red under exactly their defects"

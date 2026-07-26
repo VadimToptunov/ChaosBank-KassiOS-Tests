@@ -29,7 +29,10 @@ final class OrderTests: CBTestCase {
         onScreen(OrderScreen.self) { order in
             order.reviewButton.tap()
             order.placeButton.tap()
-            order.statusToast.within(timeout: 20).assertHasText("filled")
+            // A filled order dismisses the ticket after ~1.4s; `orderStuckPending`
+            // keeps it open (status stays pending). Assert the ticket closed —
+            // stable on clean, and still red under the defect.
+            order.reviewButton.within(timeout: 20).waitUntilGone()
         }
     }
 

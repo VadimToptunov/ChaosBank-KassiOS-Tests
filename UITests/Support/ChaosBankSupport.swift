@@ -24,6 +24,20 @@ class CBTestCase: KassTestCase {
         if let p = env["CB_INJECT_PROFILE"], !p.isEmpty { args += ["-ChaosBankProfile", p] }
         return launch(arguments: args)
     }
+
+    /// Fresh, *locked* launch — no `-ChaosBankStartUnlocked`, so the app opens on
+    /// the auth ladder. Still forwards the buggy-matrix injection hook.
+    @discardableResult
+    func launchFresh(profile: String? = nil) -> XCUIApplication {
+        // Force the locked ladder: -ChaosBankStartUnlocked 0 wins over any value
+        // lingering in the argument/standard defaults domain.
+        var args: [String] = ["-ChaosBankStartUnlocked", "0"]
+        if let profile = profile { args += ["-ChaosBankProfile", profile] }
+        let env = ProcessInfo.processInfo.environment
+        if let d = env["CB_INJECT_DEFECTS"], !d.isEmpty { args += ["-ChaosBankDefects", d] }
+        if let p = env["CB_INJECT_PROFILE"], !p.isEmpty { args += ["-ChaosBankProfile", p] }
+        return launch(arguments: args)
+    }
 }
 
 /// Base screen object. Adds `anyEl` — resolve by identifier regardless of element

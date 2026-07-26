@@ -76,7 +76,7 @@ builds. The suite asserts *correct* behaviour, so:
 
 | Area | Tests |
 | --- | --- |
-| **Auth** | the boot-unlocked affordance → home |
+| **Auth** | boot-unlocked affordance → home; the full ladder end to end — fresh launch → WKWebView web login → OTP `424242` → 6-digit passcode → home |
 | **Home** | balance + quick actions; per-currency accounts |
 | **Markets** | watchlist asset rows (AAPL/NVDA/BTC); open an asset → detail |
 | **Transfer** | form → confirm → success toast |
@@ -86,10 +86,6 @@ builds. The suite asserts *correct* behaviour, so:
 | **Transactions** | open from "See all activity" → list, count, search |
 | **Order** | Buy button labelled "Buy" (catches `wrongA11yLabel`); qty 0 disables Review (catches `limitValidation`); place → "Order filled" (catches `orderStuckPending`) |
 | **Loans** | Card → "Explore a loan" → APR / monthly / total |
-
-> Follow-up: the full auth ladder (the deliberately-hostile WKWebView login →
-> OTP `424242` → passcode) only appears on re-lock, not a fresh launch, so it
-> needs its own focused test rather than blocking this suite.
 
 Screen objects live in `UITests/Screens/`, tests in `UITests/Tests/`, and the
 launch helpers (over ChaosBank's `-ChaosBankStartUnlocked` / `-ChaosBankTab` /

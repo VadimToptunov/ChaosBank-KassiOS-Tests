@@ -11,7 +11,9 @@ final class ExchangeTests: CBTestCase {
         onScreen(ExchangeScreen.self) { ex in
             ex.amountField.typeText("100")
             ex.executeButton.tap()
-            ex.successToast.within(timeout: 20).assertVisible()
+            // The toast is transient (~1.4s); the sheet auto-dismisses on success.
+            // Assert that persistent outcome rather than racing the toast.
+            ex.executeButton.within(timeout: 20).waitUntilGone()
         }
     }
 
