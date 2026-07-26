@@ -15,6 +15,10 @@ final class HomeScreen: CBScreen {
     // Account strip — tapping one selects that currency.
     func account(_ code: String) -> KassElement { anyEl("home.account.\(code)") }
 
+    // Recent-activity list and its "See all" entry into the Transactions screen.
+    lazy var recentActivity = anyEl("home.recentActivity")
+    lazy var seeAllActivity = anyEl("home.seeAllActivity")
+
     override var onLoad: [KassElement] { [totalBalance] }
 }
 

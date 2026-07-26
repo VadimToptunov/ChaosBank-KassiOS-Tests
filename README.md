@@ -65,6 +65,10 @@ builds. The suite asserts *correct* behaviour, so:
 | **Home** | balance + quick actions; per-currency accounts |
 | **Markets** | watchlist asset rows (AAPL/NVDA/BTC); open an asset → detail |
 | **Transfer** | form → confirm → success toast |
+| **Exchange** | sheet → enter amount → execute → success toast; quote breakdown |
+| **Portfolio** | total value + P&L + holdings list |
+| **Card** | freeze → FROZEN badge (catches `cardToggleInvert`); CVV hidden on the face (catches `cardCvvVisible`) |
+| **Transactions** | open from "See all activity" → list, count, search |
 
 > Follow-up: the full auth ladder (the deliberately-hostile WKWebView login →
 > OTP `424242` → passcode) only appears on re-lock, not a fresh launch, so it
