@@ -19,6 +19,11 @@ final class HomeScreen: CBScreen {
     lazy var recentActivity = anyEl("home.recentActivity")
     lazy var seeAllActivity = anyEl("home.seeAllActivity")
 
+    /// Long-press (or triple-tap) opens the hidden dev menu mid-session — an
+    /// alternative to relaunching with `-ChaosBankShowDev 1` when a test needs
+    /// to read state (e.g. a baseline count) before flipping a dev-menu knob.
+    lazy var buildBadge = anyEl("build.badge")
+
     override var onLoad: [KassElement] { [totalBalance] }
 }
 

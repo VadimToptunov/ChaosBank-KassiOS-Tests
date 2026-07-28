@@ -72,6 +72,12 @@ builds. The suite asserts *correct* behaviour, so:
   (`wrongA11yLabel`, `limitValidation`, `orderStuckPending`, `cardToggleInvert`,
   `cardCvvVisible`) — the dogfooding contract, proven end to end.
 
+  The same is verified for the deepened Transfer/Exchange/Transactions
+  assertions below: `zeroAmountAccepted`, `successToastMissing`,
+  `paginationDup`, `filterLeaksCategory`, `roundingDrift`, and
+  `exchangeDoubleSubmit` each flip exactly their own test red — these were
+  previously presence-only checks that missed all six.
+
 ## Coverage
 
 | Area | Tests |
@@ -79,11 +85,11 @@ builds. The suite asserts *correct* behaviour, so:
 | **Auth** | boot-unlocked affordance → home; the full ladder end to end — fresh launch → WKWebView web login → OTP `424242` → 6-digit passcode → home |
 | **Home** | balance + quick actions; per-currency accounts |
 | **Markets** | watchlist asset rows (AAPL/NVDA/BTC); open an asset → detail |
-| **Transfer** | form → confirm → success toast |
-| **Exchange** | sheet → enter amount → execute → success toast; quote breakdown |
+| **Transfer** | form → confirm → success toast (catches `successToastMissing`); zero amount disables Continue (catches `zeroAmountAccepted`) |
+| **Exchange** | sheet → enter amount → execute → success toast; quote breakdown; credited amount matches the displayed "you get" (catches `roundingDrift`); a rapid double-tap on Execute exchanges only once (catches `exchangeDoubleSubmit`) |
 | **Portfolio** | total value + P&L + holdings list |
 | **Card** | freeze → FROZEN badge (catches `cardToggleInvert`); CVV hidden on the face (catches `cardCvvVisible`) |
-| **Transactions** | open from "See all activity" → list, count, search |
+| **Transactions** | open from "See all activity" → list, count, search; loading the full history has no duplicate rows (catches `paginationDup`); the "Money in" filter shows only money-in rows (catches `filterLeaksCategory`) |
 | **Order** | Buy button labelled "Buy" (catches `wrongA11yLabel`); qty 0 disables Review (catches `limitValidation`); place → "Order filled" (catches `orderStuckPending`) |
 | **Loans** | Card → "Explore a loan" → APR / monthly / total |
 
