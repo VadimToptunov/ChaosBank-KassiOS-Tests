@@ -95,3 +95,27 @@ jobs:
           echo "defect-caught UIKit test failures: $fails (expected 10)"
           [ "$fails" -eq 10 ] || { echo "::error::expected 10 UIKit tests to fail under their defects, saw $fails (build error?)"; exit 1; }
           echo "✓ all 10 UIKit clean-pass flows went red under their defects"
+
+      # Deepened Transfer/Exchange/Transactions assertions (money-math, state,
+      # concurrency) must go red under exactly their own defects — these were
+      # previously presence-only checks that missed all six of these defects.
+      - name: Buggy-matrix — deepened Transfer/Exchange/Transactions assertions must go red
+        env:
+          CB_DEFECTS: zeroAmountAccepted,successToastMissing,paginationDup,filterLeaksCategory,roundingDrift,exchangeDoubleSubmit
+        run: |
+          set -o pipefail
+          if TEST_RUNNER_CB_INJECT_DEFECTS="$CB_DEFECTS" xcodebuild test \
+              -project ChaosBankKassiOS.xcodeproj \
+              -scheme ChaosBankKassiOSUITests \
+              -destination "id=${{ steps.sim.outputs.udid }}" \
+              -only-testing:ChaosBankKassiOSUITests/TransferTests \
+              -only-testing:ChaosBankKassiOSUITests/ExchangeTests \
+              -only-testing:ChaosBankKassiOSUITests/TransactionsTests \
+              CODE_SIGNING_ALLOWED=NO 2>&1 | tee buggy-deepened.log | tail -80; then
+            echo "::error::defect build stayed green — the dogfooding contract is broken"
+            exit 1
+          fi
+          fails=$(grep -c 'failed (.*seconds)' buggy-deepened.log || true)
+          echo "defect-caught test failures: $fails (expected 6)"
+          [ "$fails" -eq 6 ] || { echo "::error::expected 6 tests to fail under their defects, saw $fails (build error?)"; exit 1; }
+          echo "✓ all 6 deepened clean-pass flows went red under exactly their defects"
