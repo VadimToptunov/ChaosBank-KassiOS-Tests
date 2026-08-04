@@ -9,6 +9,44 @@ This repo is the dogfooding ground for KassiOS: a real, awkward app (a WKWebView
 login, a live market feed, multi-screen money flows) exercised through KassiOS's
 screen-object DSL, implicit waits, and flaky-safety.
 
+> **New to the framework?** Start at
+> **[KassiOS](https://github.com/VadimToptunov/KassiOS)** — this repo is its
+> real-world example suite.
+
+## What a KassiOS test looks like
+
+A real test from this repo — the transfer happy path. No `waitForExistence`, no
+`sleep`, and the deep assertions catch a *transient* success toast (it lives
+~1.4s) that a presence-only check would miss:
+
+```swift
+func test_transfer_happyPath_completes() {
+    launchUnlocked()
+    onScreen(HomeScreen.self) { $0.transferAction.tap() }
+    onScreen(TransferScreen.self) { transfer in
+        transfer.recipientField.typeText("Alex")
+        transfer.amountField.typeText("100")
+        transfer.continueButton.tap()
+        transfer.confirmButton.tap()
+        transfer.successToast.assertAppears(within: 2)          // catches successToastMissing
+        transfer.confirmButton.within(timeout: 20).waitUntilGone()
+    }
+}
+```
+
+Its screen object is a plain page object
+([`UITests/Screens/TransferScreen.swift`](UITests/Screens/TransferScreen.swift)):
+
+```swift
+final class TransferScreen: CBScreen {
+    lazy var recipientField = textField("transfer.recipientField")
+    lazy var amountField    = textField("transfer.amountField")
+    lazy var continueButton = button("transfer.continueButton")
+    lazy var successToast   = anyEl("transfer.successToast")
+    override var onLoad: [KassElement] { [recipientField] }
+}
+```
+
 ## How it fits together
 
 Both apps are **git submodules**; a generator wires them into one Xcode project:
