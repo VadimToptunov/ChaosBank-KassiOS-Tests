@@ -14,6 +14,8 @@ final class HomeScreen: CBScreen {
 
     // Account strip — tapping one selects that currency.
     func account(_ code: String) -> KassElement { anyEl("home.account.\(code)") }
+    /// The display-currency option for the total ("EUR", "USD", "GBP").
+    func currency(_ code: String) -> KassElement { button("home.currencySegment.\(code)") }
 
     // Recent-activity list and its "See all" entry into the Transactions screen.
     lazy var recentActivity = anyEl("home.recentActivity")

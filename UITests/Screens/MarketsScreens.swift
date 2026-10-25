@@ -13,6 +13,9 @@ final class MarketsScreen: CBScreen {
     /// The price cell for `symbol` — proof the row is present.
     func price(_ symbol: String) -> KassElement { anyEl("markets.asset.\(symbol).price") }
 
+    /// The day-change cell for `symbol` ("+0.77%").
+    func change(_ symbol: String) -> KassElement { anyEl("markets.asset.\(symbol).change") }
+
     /// The whole asset **cell** by its per-symbol id. The UIKit "views" build sets
     /// `markets.asset.<SYMBOL>` on the `UITableViewCell` itself, so this both
     /// proves presence and is tappable there.
@@ -34,6 +37,7 @@ final class AssetScreen: CBScreen {
     lazy var root = anyEl("asset.root")
     lazy var symbol = anyEl("asset.symbol")
     lazy var price = anyEl("asset.price")
+    lazy var change = anyEl("asset.change")
     lazy var buyButton = button("asset.buyButton")
     lazy var sellButton = button("asset.sellButton")
 

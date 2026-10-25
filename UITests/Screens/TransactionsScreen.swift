@@ -25,5 +25,14 @@ final class TransactionsScreen: CBScreen {
         ))
     }
 
+    /// Any text in a transaction row whose label contains `text`.
+    func rowText(containing text: String) -> KassElement {
+        custom("transaction row text ~ '\(text)'") { [app] in
+            app.staticTexts.matching(NSPredicate(
+                format: "identifier BEGINSWITH %@ AND label CONTAINS %@", "transactions.row.", text
+            )).firstMatch
+        }
+    }
+
     override var onLoad: [KassElement] { [list] }
 }

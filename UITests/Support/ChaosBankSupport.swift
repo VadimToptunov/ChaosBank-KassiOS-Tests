@@ -10,8 +10,8 @@ class CBTestCase: KassTestCase {
     /// Boots straight to the unlocked home, skipping the whole auth ladder
     /// (`-ChaosBankStartUnlocked 1`). Optionally deep-links a tab.
     @discardableResult
-    func launchUnlocked(tab: String? = nil, profile: String? = nil) -> XCUIApplication {
-        var args = ["-ChaosBankStartUnlocked", "1"]
+    func launchUnlocked(tab: String? = nil, profile: String? = nil, extra: [String] = []) -> XCUIApplication {
+        var args = ["-ChaosBankStartUnlocked", "1"] + extra
         if let tab = tab { args += ["-ChaosBankTab", tab] }
         if let profile = profile { args += ["-ChaosBankProfile", profile] }
 
@@ -45,10 +45,10 @@ class CBTestCase: KassTestCase {
     /// Fresh, *locked* launch — no `-ChaosBankStartUnlocked`, so the app opens on
     /// the auth ladder. Still forwards the buggy-matrix injection hook.
     @discardableResult
-    func launchFresh(profile: String? = nil) -> XCUIApplication {
+    func launchFresh(profile: String? = nil, extra: [String] = []) -> XCUIApplication {
         // Force the locked ladder: -ChaosBankStartUnlocked 0 wins over any value
         // lingering in the argument/standard defaults domain.
-        var args: [String] = ["-ChaosBankStartUnlocked", "0"]
+        var args: [String] = ["-ChaosBankStartUnlocked", "0"] + extra
         if let profile = profile { args += ["-ChaosBankProfile", profile] }
         let env = ProcessInfo.processInfo.environment
         if let d = env["CB_INJECT_DEFECTS"], !d.isEmpty { args += ["-ChaosBankDefects", d] }
@@ -65,5 +65,56 @@ class CBScreen: KassScreen {
         custom("any '\(id)'") { [app] in
             app.descendants(matching: .any)[id].firstMatch
         }
+    }
+}
+
+/// Every signed number in a ChaosBank label, in order, as en-US formatted:
+/// "+€69.52 · +0.40% today" → [69.52, 0.40]; "−$282.72" → [-282.72].
+/// The app formats negatives with U+2212 MINUS SIGN, not an ASCII hyphen.
+func numbers(in label: String) -> [Double] {
+    let regex = try! NSRegularExpression(pattern: "([+\\-\u{2212}]?)[€$£]?([0-9][0-9,]*(?:\\.[0-9]+)?)")
+    let ns = label as NSString
+    return regex.matches(in: label, range: NSRange(location: 0, length: ns.length)).compactMap { m in
+        let sign = ns.substring(with: m.range(at: 1))
+        guard let value = Double(ns.substring(with: m.range(at: 2)).replacingOccurrences(of: ",", with: "")) else { return nil }
+        return sign == "-" || sign == "\u{2212}" ? -value : value
+    }
+}
+
+extension KassElement {
+    /// The `index`-th signed number in this element's label (see `numbers(in:)`).
+    /// Waits for the element first, like every other KassiOS read.
+    func number(_ index: Int = 0, file: StaticString = #filePath, line: UInt = #line) -> Double {
+        assertExists(file: file, line: line)
+        let found = numbers(in: readLabel())
+        guard found.indices.contains(index) else {
+            XCTFail("no number #\(index) in '\(readLabel())'", file: file, line: line)
+            return .nan
+        }
+        return found[index]
+    }
+
+    /// The last signed number in this element's label.
+    func lastNumber(file: StaticString = #filePath, line: UInt = #line) -> Double {
+        assertExists(file: file, line: line)
+        guard let last = numbers(in: readLabel()).last else {
+            XCTFail("no number in '\(readLabel())'", file: file, line: line)
+            return .nan
+        }
+        return last
+    }
+}
+
+extension CBTestCase {
+    /// Labels of the given identifiers, all read from one accessibility snapshot,
+    /// so values that tick (prices, P&L) come from the same moment.
+    func snapshotLabels(_ ids: Set<String>) throws -> [String: String] {
+        var found: [String: String] = [:]
+        func walk(_ s: XCUIElementSnapshot) {
+            if ids.contains(s.identifier), found[s.identifier] == nil { found[s.identifier] = s.label }
+            s.children.forEach(walk)
+        }
+        walk(try app.snapshot())
+        return found
     }
 }
