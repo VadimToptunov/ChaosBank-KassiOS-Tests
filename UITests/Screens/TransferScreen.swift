@@ -10,14 +10,9 @@ final class TransferScreen: CBScreen {
     lazy var balanceAfter = anyEl("transfer.balanceAfter")
     lazy var continueButton = button("transfer.continueButton")
 
-    // Confirm sheet. ChaosBank's sheet applies `transfer.confirmSheet` to the
-    // container, and SwiftUI propagates it onto every child — including the
-    // Confirm button — so the button is matched by that id + its "Confirm" label.
+    // Confirm sheet.
     lazy var confirmSheet = anyEl("transfer.confirmSheet")
-    lazy var confirmButton = custom("transfer confirm button") { [app] in
-        app.buttons.matching(identifier: "transfer.confirmSheet")
-            .matching(NSPredicate(format: "label == %@", "Confirm")).firstMatch
-    }
+    lazy var confirmButton = button("transfer.confirmButton")
 
     // Outcome.
     lazy var successToast = anyEl("transfer.successToast")

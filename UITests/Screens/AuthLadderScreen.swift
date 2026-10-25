@@ -4,27 +4,20 @@ import XCTest
 /// gate → WKWebView web login → OTP (424242, auto-submits at 6 digits) →
 /// passcode setup (6 digits, auto-submits) → unlocked.
 ///
-/// The gate ("Welcome back" / "Log in") applies `auth.gate` to its container and
-/// SwiftUI propagates that id onto every child, so the Log-in button is matched by
-/// id + label. The web login lives in a WKWebView, reached via `app.webViews`.
+/// The web login lives in a WKWebView, reached via `app.webViews`.
 final class AuthLadderScreen: CBScreen {
     /// The gate's "Log in" button (opens the web sign-in sheet).
-    var loginButton: KassElement {
-        custom("gate 'Log in' button") { [app] in
-            app.buttons.matching(identifier: "auth.gate")
-                .matching(NSPredicate(format: "label == %@", "Log in")).firstMatch
-        }
-    }
+    lazy var loginButton = button("auth.webLoginButton")
 
     lazy var webSheet = anyEl("auth.webSheet")
 
-    /// Every ladder stage (gate / OTP / passcode) wraps its content in `auth.gate`,
-    /// and SwiftUI propagates that id onto every child — so the single text field on
-    /// the *current* stage is matched by that id (not auth.otpField / passcodeField).
-    /// Re-resolved each use, it is the OTP field, then the passcode field.
+    /// The code field of the *current* stage. Re-resolved each use, it is the OTP
+    /// field, then the passcode field.
     var codeField: KassElement {
-        custom("current auth text field") { [app] in
-            app.textFields.matching(identifier: "auth.gate").firstMatch
+        custom("current auth code field") { [app] in
+            app.textFields.matching(NSPredicate(
+                format: "identifier IN %@", ["auth.otpField", "auth.passcodeField"]
+            )).firstMatch
         }
     }
 
