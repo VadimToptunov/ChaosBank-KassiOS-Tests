@@ -9,14 +9,10 @@ import XCTest
 final class DevMenuScreen: CBScreen {
     lazy var closeButton = anyEl("dev.close")
 
-    /// A network-condition segment ("Normal", "Offline", "Slow", "Flaky").
-    /// `SegmentBar` propagates its own `dev.networkCondition` container id onto
-    /// every option, clobbering each option's more specific
-    /// `dev.networkCondition.<kind>` id (same SwiftUI quirk as elsewhere in
-    /// this app), so — like `TransferScreen.confirmButton` — match by the
-    /// shared id plus the option's visible label instead.
+    /// A network-condition segment by its label ("Normal", "Offline", "Slow",
+    /// "Flaky"), located by its `dev.networkCondition.<kind>` identifier.
     func networkCondition(_ label: String) -> KassElement {
-        button(id: "dev.networkCondition", label: label)
+        button("dev.networkCondition.\(label.lowercased())")
     }
 
     override var onLoad: [KassElement] { [closeButton] }

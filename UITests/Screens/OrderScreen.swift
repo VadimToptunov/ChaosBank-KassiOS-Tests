@@ -14,15 +14,8 @@ final class OrderScreen: CBScreen {
     lazy var warning = anyEl("order.warning")
     lazy var statusToast = anyEl("order.statusToast")
 
-    /// The Place button lives in the confirm sheet, which may propagate its
-    /// `order.confirmSheet` id onto children (as the transfer sheet does), so we
-    /// accept either id and pin it by its "Place order" label.
-    lazy var placeButton = custom("order place button") { [app] in
-        app.buttons.matching(
-            NSPredicate(format: "(identifier == %@ OR identifier == %@) AND label == %@",
-                        "order.placeButton", "order.confirmSheet", "Place order")
-        ).firstMatch
-    }
+    /// The Place button in the confirm sheet.
+    lazy var placeButton = button("order.placeButton")
 
     override var onLoad: [KassElement] { [qtyValue] }
 }
