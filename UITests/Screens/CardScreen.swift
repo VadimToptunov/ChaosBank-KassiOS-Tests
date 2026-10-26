@@ -28,6 +28,8 @@ final class CardScreen: CBScreen {
     lazy var cvv = anyEl("card.cvv")
     lazy var pinButton = button("card.pinButton")
     lazy var virtualNumber = anyEl("card.virtualNumber")
+    lazy var kycButton = button("card.kycButton")
+    lazy var kycStatus = anyEl("card.kycStatus")
 
     override var onLoad: [KassElement] { [anyEl("card.freezeToggle")] }
 }
