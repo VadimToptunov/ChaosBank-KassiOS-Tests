@@ -118,3 +118,18 @@ extension CBTestCase {
         return found
     }
 }
+
+extension CBTestCase {
+    /// Scrolls the screen up until `element` is hittable, then lets the scroll
+    /// settle: a tap during deceleration only stops the scroll.
+    func reveal(_ element: KassElement, swipes: Int = 5) {
+        element.assertExists()
+        let target = element.resolve()
+        var done = 0
+        while !target.isHittable && done < swipes {
+            app.swipeUp(velocity: .slow)
+            done += 1
+        }
+        if done > 0 { RunLoop.current.run(until: Date().addingTimeInterval(1)) }
+    }
+}
