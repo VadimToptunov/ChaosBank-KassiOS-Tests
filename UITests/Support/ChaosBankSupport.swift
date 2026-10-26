@@ -19,9 +19,7 @@ class CBTestCase: KassTestCase {
         // without editing any test, to prove the clean-pass flows go red. Set
         // `TEST_RUNNER_CB_INJECT_DEFECTS=a,b` (or `..._PROFILE=validation`) on the
         // xcodebuild invocation — Xcode forwards it into the runner (prefix stripped).
-        let env = ProcessInfo.processInfo.environment
-        if let d = env["CB_INJECT_DEFECTS"], !d.isEmpty { args += ["-ChaosBankDefects", d] }
-        if let p = env["CB_INJECT_PROFILE"], !p.isEmpty { args += ["-ChaosBankProfile", p] }
+        args += injected()
         return launch(arguments: args)
     }
 
@@ -36,9 +34,7 @@ class CBTestCase: KassTestCase {
         var args = ["-ChaosBankStartUnlocked", "1", "-ChaosBankUIKit", "1"]
         if let tab = tab { args += ["-ChaosBankTab", tab] }
         if let profile = profile { args += ["-ChaosBankProfile", profile] }
-        let env = ProcessInfo.processInfo.environment
-        if let d = env["CB_INJECT_DEFECTS"], !d.isEmpty { args += ["-ChaosBankDefects", d] }
-        if let p = env["CB_INJECT_PROFILE"], !p.isEmpty { args += ["-ChaosBankProfile", p] }
+        args += injected()
         return launch(arguments: args)
     }
 
@@ -50,10 +46,19 @@ class CBTestCase: KassTestCase {
         // lingering in the argument/standard defaults domain.
         var args: [String] = ["-ChaosBankStartUnlocked", "0"] + extra
         if let profile = profile { args += ["-ChaosBankProfile", profile] }
+        args += injected()
+        return launch(arguments: args)
+    }
+
+    /// The buggy-matrix hook, plus `TEST_RUNNER_CB_BACKEND=<url>` to run the same tests
+    /// against ChaosBank-Server instead of the embedded mock.
+    private func injected() -> [String] {
         let env = ProcessInfo.processInfo.environment
+        var args: [String] = []
         if let d = env["CB_INJECT_DEFECTS"], !d.isEmpty { args += ["-ChaosBankDefects", d] }
         if let p = env["CB_INJECT_PROFILE"], !p.isEmpty { args += ["-ChaosBankProfile", p] }
-        return launch(arguments: args)
+        if let b = env["CB_BACKEND"], !b.isEmpty { args += ["-ChaosBankBackend", b] }
+        return args
     }
 }
 
