@@ -110,6 +110,20 @@ builds. The suite asserts *correct* behaviour, so:
   (`wrongA11yLabel`, `limitValidation`, `orderStuckPending`, `cardToggleInvert`,
   `cardCvvVisible`) — the dogfooding contract, proven end to end.
 
+- **Run the same suite against ChaosBank-Server.** `TEST_RUNNER_CB_BACKEND=<url>`
+  launches the app with `-ChaosBankBackend <url>`, so the tests hit
+  [ChaosBank-Server](https://github.com/VadimToptunov/ChaosBank-Server) over HTTP
+  instead of the embedded mock (`docker compose up` there first):
+
+  ```bash
+  TEST_RUNNER_CB_BACKEND=http://localhost:8080 \
+  xcodebuild test -project ChaosBankKassiOS.xcodeproj -scheme ChaosBankKassiOSUITests \
+    -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO
+  ```
+
+  Needs a ChaosBank build with the server backend. Verified: 64/64 green against a
+  local server.
+
   The same is verified for the deepened Transfer/Exchange/Transactions
   assertions below: `zeroAmountAccepted`, `successToastMissing`,
   `paginationDup`, `filterLeaksCategory`, `roundingDrift`, and
