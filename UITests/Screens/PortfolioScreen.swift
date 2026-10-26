@@ -11,6 +11,8 @@ final class PortfolioScreen: CBScreen {
 
     /// A holding row by its per-symbol locator (`portfolio.holding.<SYMBOL>`).
     func holding(_ symbol: String) -> KassElement { anyEl("portfolio.holding.\(symbol)") }
+    func holdingValue(_ symbol: String) -> KassElement { anyEl("portfolio.holding.\(symbol).value") }
+    func holdingPnl(_ symbol: String) -> KassElement { anyEl("portfolio.holding.\(symbol).pnl") }
 
     override var onLoad: [KassElement] { [totalValue] }
 }

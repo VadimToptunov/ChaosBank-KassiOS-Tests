@@ -26,6 +26,8 @@ final class CardScreen: CBScreen {
     lazy var frozenBadgeUIKit = frozenBadge
     /// The CVV — must never appear on the card face on the clean profile.
     lazy var cvv = anyEl("card.cvv")
+    lazy var pinButton = button("card.pinButton")
+    lazy var virtualNumber = anyEl("card.virtualNumber")
 
     override var onLoad: [KassElement] { [anyEl("card.freezeToggle")] }
 }

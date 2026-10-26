@@ -118,6 +118,9 @@ builds. The suite asserts *correct* behaviour, so:
 
 ## Coverage
 
+Each value, localization, concurrency and security test was checked the mutation-testing way: green on `clean`, red under exactly its own ChaosBank defect, run one defect at a time. Of the 23 money defects, 21 are killed; the other two (`detailChangeWrongBase`, `pnlPercentAbsOnly`) can't be told apart from the correct code on the simulated feed and the seeded portfolio, which is up overall.
+
+
 | Area | Tests |
 | --- | --- |
 | **Auth** | boot-unlocked affordance → home; the full ladder end to end — fresh launch → WKWebView web login → OTP `424242` → 6-digit passcode → home |
@@ -130,6 +133,10 @@ builds. The suite asserts *correct* behaviour, so:
 | **Transactions** | open from "See all activity" → list, count, search; loading the full history has no duplicate rows (catches `paginationDup`); the "Money in" filter shows only money-in rows (catches `filterLeaksCategory`) |
 | **Order** | Buy button labelled "Buy" (catches `wrongA11yLabel`); qty 0 disables Review (catches `limitValidation`); place → "Order filled" (catches `orderStuckPending`) |
 | **Loans** | Card → "Explore a loan" → APR / monthly / total |
+| **Value checks** | Home total = sum of accounts (FX), today's change; transfer debits exactly the amount from EUR and previews "balance after"; exchange moves money between the right accounts; loan payment matches the advertised APR; asset detail agrees with the market row (day open from one snapshot); order estimated total (market and limit); portfolio total = sum of holdings, holding valued at market price, P&L % vs cost basis, TSLA loss shown as a loss |
+| **Localization** | "1,000.50" parses as a thousand; USD total shows "$"; prices keep cents; search ignores surrounding spaces; de-DE grouping and symbol placement |
+| **Concurrency** | double-tap Confirm debits once; double-tap Place buys once; order reference price stays at the captured price; Sync playground loses no updates |
+| **Security** | PAN masked except the last four; PIN stays masked; virtual card doesn't reuse the real number; wrong OTP rejected; three wrong OTPs lock the step; a deep link doesn't skip the gate; the session token lands in the Keychain |
 
 Screen objects live in `UITests/Screens/`, tests in `UITests/Tests/`, and the
 launch helpers (over ChaosBank's `-ChaosBankStartUnlocked` / `-ChaosBankTab` /

@@ -37,5 +37,17 @@ final class AuthLadderScreen: CBScreen {
         }
     }
 
+    /// Submits the web form. Right after typing, WKWebView's input accessory bar
+    /// ("^ v ✓") can sit on top of the "Log in" button, so a tap lands on the bar
+    /// instead; close the bar with its Done button first.
+    func submitWebLogin() {
+        let done = app.toolbars.buttons["Done"]
+        if done.exists && done.isHittable { done.tap() }
+        webSubmit.tap()
+    }
+
+    lazy var otpError = anyEl("auth.otpError")
+    lazy var passcodeStage = anyEl("auth.passcode")
+
     override var onLoad: [KassElement] { [anyEl("auth.gate")] }
 }

@@ -15,5 +15,23 @@ final class DevMenuScreen: CBScreen {
         button("dev.networkCondition.\(label.lowercased())")
     }
 
+    /// A locale option by its raw value ("enUS", "deDE", "ar").
+    func locale(_ id: String) -> KassElement { button("dev.locale.\(id)") }
+    lazy var localeSample = anyEl("dev.localeSample")
+    lazy var localeCurrencySample = anyEl("dev.localeCurrencySample")
+    lazy var tokenStorage = anyEl("dev.tokenStorage")
+    lazy var syncButton = anyEl("dev.sync")
+
     override var onLoad: [KassElement] { [closeButton] }
+}
+
+/// The dev-menu Sync playground: runs a batch of concurrent +1 updates on a
+/// shared backend counter. Reference defect: `syncLostUpdate`.
+final class SyncScreen: CBScreen {
+    lazy var counter = anyEl("sync.counter")
+    lazy var expected = anyEl("sync.expected")
+    lazy var runButton = button("sync.runButton")
+    lazy var resetButton = button("sync.resetButton")
+
+    override var onLoad: [KassElement] { [runButton] }
 }

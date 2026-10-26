@@ -7,6 +7,9 @@ import XCTest
 final class OrderScreen: CBScreen {
     lazy var root = anyEl("order.root")
     lazy var refPrice = anyEl("order.refPrice")
+    lazy var estTotal = anyEl("order.estTotal")
+    lazy var typeLimit = button("order.type.limit")
+    lazy var limitPriceField = textField("order.limitPriceField")
     lazy var qtyValue = anyEl("order.qtyStepper.value")
     lazy var qtyIncrement = button("order.qtyStepper.increment")
     lazy var qtyDecrement = button("order.qtyStepper.decrement")
