@@ -50,8 +50,9 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             2>&1 | tee xcodebuild.log | tail -120
 
-  # Every defect the suite claims to catch must turn its tests red, one defect per
-  # run, two runs at a time on clones of one simulator. The defect → tests map is generated from the tests' "Catches `id`"
+  # Every defect the suite claims to catch must turn its tests red, one defect at
+  # a time. Not --parallel: on this 3-core runner two simulators made each run
+  # twice as slow, and two load-sensitive tests stayed green with their defect on. The defect → tests map is generated from the tests' "Catches `id`"
   # doc lines (tools/gen_mutants.py), so it can't drift from the code. Runs in
   # parallel with the clean run.
   mutants:
@@ -100,7 +101,7 @@ jobs:
         run: |
           swift build -c release --package-path vendor/KassiOS --product kassios-mutants
           KASS_DEST="id=${{ steps.sim.outputs.udid }}" python3 tools/gen_mutants.py > ci-mutants.json
-          vendor/KassiOS/.build/release/kassios-mutants ci-mutants.json --parallel 2 --log-dir mutant-logs
+          vendor/KassiOS/.build/release/kassios-mutants ci-mutants.json --log-dir mutant-logs
 
       - name: Keep the logs
         if: always()
