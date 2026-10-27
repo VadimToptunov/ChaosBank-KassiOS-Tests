@@ -12,10 +12,7 @@ final class KycTests: CBTestCase {
             "-ChaosBankKycDocument", document,
             "-ChaosBankKycSelfie", selfie,
         ])
-        onScreen(CardScreen.self) { card in
-            reveal(card.kycButton)   // below the fold on the Card tab
-            card.kycButton.tap()
-        }
+        onScreen(CardScreen.self) { $0.kycButton.tap() }   // below the fold: KassiOS scrolls to it
     }
 
     /// Scan → selfie → submit, then wait for the result.

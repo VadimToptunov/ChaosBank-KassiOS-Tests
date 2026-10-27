@@ -21,6 +21,7 @@ final class UIKitViewsTests: CBTestCase {
 
     /// Online payments defaults to on in the model, so the switch must load on.
     /// `toggleInitialStateNotBound` leaves it at the hardcoded off → red.
+    /// Catches `toggleInitialStateNotBound`.
     func test_uikit_card_onlineToggle_reflectsModelOnLoad() {
         launchUIKit(tab: "card")
         onScreen(CardScreen.self) { card in
@@ -30,6 +31,7 @@ final class UIKitViewsTests: CBTestCase {
 
     /// Flipping freeze on must surface the FROZEN badge. `switchChangeNotHandled`
     /// never wires the freeze handler, so the badge never appears → red.
+    /// Catches `switchChangeNotHandled`.
     func test_uikit_card_freeze_showsFrozenBadge() {
         launchUIKit(tab: "card")
         onScreen(CardScreen.self) { card in
@@ -42,6 +44,7 @@ final class UIKitViewsTests: CBTestCase {
     /// Clearing the limit makes it invalid, so the error label — derived from the
     /// *model* — must appear. `fieldEditNotCommitted` drops the edit, so the model
     /// keeps the valid "2000" and no error shows → red.
+    /// Catches `fieldEditNotCommitted`.
     func test_uikit_card_limitEdit_commitsToModel() {
         launchUIKit(tab: "card")
         onScreen(CardScreen.self) { card in
@@ -57,6 +60,7 @@ final class UIKitViewsTests: CBTestCase {
     /// Tapping the Crypto segment switches the list to crypto (ETH is crypto-only,
     /// not on the watchlist). `controlActionNotWired` never binds the segment
     /// action, so the list stays on the watchlist and ETH never appears → red.
+    /// Catches `controlActionNotWired`.
     func test_uikit_markets_cryptoSegment_switchesList() {
         launchUIKit(tab: "markets")
         onScreen(MarketsScreen.self) { markets in
@@ -68,6 +72,7 @@ final class UIKitViewsTests: CBTestCase {
     /// Switching segments must replace the list, so after Stocks → Crypto the
     /// stock AAPL is gone. `listNotClearedOnReload` appends instead, so AAPL
     /// lingers from the earlier segment → red.
+    /// Catches `listNotClearedOnReload`.
     func test_uikit_markets_switchingSegment_replacesList() {
         launchUIKit(tab: "markets")
         onScreen(MarketsScreen.self) { markets in
@@ -82,6 +87,7 @@ final class UIKitViewsTests: CBTestCase {
     /// Tapping a row pushes that row's asset detail (chart + stats), like the
     /// SwiftUI build. `rowTapOpensWrongItem` / `assetRowOpensWrongDetail` open the
     /// next row (off-by-one), so the detail names NVIDIA instead of Apple → red.
+    /// Catches `rowTapOpensWrongItem`.
     func test_uikit_markets_rowTap_opensTappedAsset() {
         launchUIKit(tab: "markets")
         onScreen(MarketsScreen.self) { $0.assetCell("AAPL").tap() }
@@ -95,6 +101,7 @@ final class UIKitViewsTests: CBTestCase {
 
     /// The total is rendered through the currency formatter — grouped, with a
     /// symbol. `labelNotFormatted` binds the raw Decimal (no grouping comma) → red.
+    /// Catches `labelNotFormatted`.
     func test_uikit_portfolio_total_isCurrencyFormatted() {
         launchUIKit(tab: "portfolio")
         onScreen(PortfolioScreen.self) { portfolio in
@@ -104,6 +111,7 @@ final class UIKitViewsTests: CBTestCase {
 
     /// Each holding row exposes its per-symbol locator. `rowLocatorMissing` never
     /// sets it, so `portfolio.holding.AAPL` can't be found → red.
+    /// Catches `rowLocatorMissing`.
     func test_uikit_portfolio_holdingRow_hasLocator() {
         launchUIKit(tab: "portfolio")
         onScreen(PortfolioScreen.self) { portfolio in
@@ -115,6 +123,7 @@ final class UIKitViewsTests: CBTestCase {
 
     /// Continue tracks form validity, so it's disabled on the empty form.
     /// `submitEnabledWhenInvalid` leaves it enabled → red.
+    /// Catches `submitEnabledWhenInvalid`.
     func test_uikit_transfer_continueDisabledWhenInvalid() {
         launchUIKit()
         onScreen(HomeScreen.self) { $0.transferAction.tap() }
@@ -128,6 +137,7 @@ final class UIKitViewsTests: CBTestCase {
     /// "You get" recomputes when the amount changes: 1000 EUR → USD at 1.08 minus
     /// the 0.5% fee is $1,074.60. `outputNotRecomputed` skips the recompute, so it
     /// stays at the initial $0.00 → red.
+    /// Catches `outputNotRecomputed`.
     func test_uikit_exchange_youGet_recomputesOnAmountChange() {
         launchUIKit()
         onScreen(HomeScreen.self) { $0.exchangeAction.tap() }

@@ -20,9 +20,9 @@ final class PortfolioValueTests: CBTestCase {
     /// (drops ETH).
     func test_portfolio_total_equalsSumOfHoldings() throws {
         launchUnlocked(tab: "portfolio")
-        onScreen(PortfolioScreen.self) { p in p.holdingValue("ETH").assertExists() }
         let ids = ["AAPL", "TSLA", "ETH"].map { "portfolio.holding.\($0).value" }
-        let labels = try snapshotLabels(Set(ids + ["portfolio.totalValue"]))
+        var labels: [String: String] = [:]
+        onScreen(PortfolioScreen.self) { p in labels = p.readTexts(ids + ["portfolio.totalValue"]) }
         let sum = try ids.map { try XCTUnwrap(numbers(in: try XCTUnwrap(labels[$0])).first) }.reduce(0, +)
         let total = try XCTUnwrap(numbers(in: try XCTUnwrap(labels["portfolio.totalValue"])).first)
         XCTAssertEqual(total, sum, accuracy: 0.02, "total should be the sum of the holdings")

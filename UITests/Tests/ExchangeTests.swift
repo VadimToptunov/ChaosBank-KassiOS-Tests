@@ -40,6 +40,7 @@ final class ExchangeTests: CBTestCase {
     /// `roundingDrift`'s `Double` routing tips the last cent — a generic amount
     /// like `100` lands away from any tie and the sub-cent drift disappears
     /// once both paths round to display precision, so the defect goes unseen.
+    /// Catches `roundingDrift`.
     func test_exchange_creditedAmount_matchesDisplayedYouGet() {
         launchUnlocked()
         onScreen(HomeScreen.self) { $0.exchangeAction.tap() }
@@ -77,6 +78,7 @@ final class ExchangeTests: CBTestCase {
     /// `XCUIElement.doubleTap()` (a single system gesture) can't stand in for
     /// this either — the button's tap-gesture recognizer fires its action
     /// once per double-tap, so it can't race itself.
+    /// Catches `exchangeDoubleSubmit`.
     func test_exchange_rapidDoubleTapExecute_exchangesOnlyOnce() {
         launchUnlocked()
         // Read the baseline count before touching the network condition —
@@ -96,9 +98,7 @@ final class ExchangeTests: CBTestCase {
         onScreen(HomeScreen.self) { $0.exchangeAction.tap() }
         onScreen(ExchangeScreen.self) { ex in
             ex.amountField.typeText("100")
-            let button = ex.executeButton.resolve()
-            button.tap()
-            button.tap()
+            ex.executeButton.rapidTap(times: 2)
             ex.executeButton.within(timeout: 20).waitUntilGone()
         }
         onScreen(HomeScreen.self) { $0.seeAllActivity.tap() }

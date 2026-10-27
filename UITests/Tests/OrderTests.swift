@@ -5,6 +5,7 @@ final class OrderTests: CBTestCase {
     /// The Buy button must announce itself as "Buy". Under `wrongA11yLabel` its
     /// accessibility label reads "Sell" and this goes red. (A11y-only defect —
     /// exactly what a framework like KassiOS should surface.)
+    /// Catches `wrongA11yLabel`.
     func test_asset_buyButton_labelledBuy() {
         launchUnlocked(tab: "markets")
         onScreen(MarketsScreen.self) { $0.assetRow("AAPL").tap() }
@@ -13,6 +14,7 @@ final class OrderTests: CBTestCase {
 
     /// Zero quantity must block Review. Under `limitValidation` the form reports
     /// valid at qty 0, Review stays enabled, and this goes red.
+    /// Catches `limitValidation`.
     func test_order_zeroQuantity_disablesReview() {
         openBuyTicket()
         onScreen(OrderScreen.self) { order in
@@ -24,6 +26,7 @@ final class OrderTests: CBTestCase {
 
     /// A placed market order reports "Order filled". Under `orderStuckPending`
     /// the toast stays "Order pending…" and this goes red.
+    /// Catches `orderStuckPending`.
     func test_order_place_reportsFilled() {
         openBuyTicket()
         onScreen(OrderScreen.self) { order in

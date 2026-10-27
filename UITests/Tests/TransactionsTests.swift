@@ -22,6 +22,7 @@ final class TransactionsTests: CBTestCase {
     /// The seed history is 16 transactions at a page size of 6 — two "Load
     /// more" taps load all of it (6 → 12 → 16), so this loads the full list
     /// rather than relying on a specific page boundary.
+    /// Catches `paginationDup`.
     func test_transactions_loadMore_noDuplicateRows() {
         launchUnlocked()
         onScreen(HomeScreen.self) { $0.seeAllActivity.tap() }
@@ -36,6 +37,7 @@ final class TransactionsTests: CBTestCase {
     /// The "Money in" filter must show only money-in rows. `filterLeaksCategory`
     /// lets every transaction through regardless of direction once that filter
     /// is selected, so a money-out ("−") row leaks in among the "+" ones.
+    /// Catches `filterLeaksCategory`.
     func test_transactions_moneyInFilter_showsOnlyMoneyIn() {
         launchUnlocked()
         onScreen(HomeScreen.self) { $0.seeAllActivity.tap() }

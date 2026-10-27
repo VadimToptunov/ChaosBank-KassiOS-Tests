@@ -5,6 +5,7 @@ final class TransferTests: CBTestCase {
     /// The transfer happy path: form → confirm → success. Passes on the `clean`
     /// profile; flip a defect (e.g. `-ChaosBankProfile validation`) and the same
     /// flow surfaces the bug — that's the dogfooding contract.
+    /// Catches `successToastMissing`.
     func test_transfer_happyPath_completes() {
         launchUnlocked()
         onScreen(HomeScreen.self) { $0.transferAction.tap() }
@@ -28,6 +29,7 @@ final class TransferTests: CBTestCase {
 
     /// A zero amount must not enable Continue. `zeroAmountAccepted` relaxes the
     /// validation to `amount >= 0`, so this only fails once that guard is gone.
+    /// Catches `zeroAmountAccepted`.
     func test_transfer_zeroAmount_disablesContinue() {
         launchUnlocked()
         onScreen(HomeScreen.self) { $0.transferAction.tap() }

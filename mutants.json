@@ -1,0 +1,195 @@
+{
+  "action": "test-without-building",
+  "xcodebuild": [
+    "-project",
+    "ChaosBankKassiOS.xcodeproj",
+    "-scheme",
+    "ChaosBankKassiOSUITests",
+    "-destination",
+    "platform=iOS Simulator,name=iPhone 17",
+    "-derivedDataPath",
+    "DerivedData",
+    "CODE_SIGNING_ALLOWED=NO"
+  ],
+  "inject": "TEST_RUNNER_CB_INJECT_DEFECTS",
+  "mutants": {
+    "balanceAfterAdds": [
+      "ChaosBankKassiOSUITests/TransferValueTests/test_transfer_balanceAfter_subtractsTheAmount"
+    ],
+    "balanceFloorRounded": [
+      "ChaosBankKassiOSUITests/HomeValueTests/test_home_total_equalsSumOfAccounts"
+    ],
+    "balanceWrongCurrencySymbol": [
+      "ChaosBankKassiOSUITests/LocalizationTests/test_home_total_usesTheSelectedCurrencySymbol"
+    ],
+    "cardCvvVisible": [
+      "ChaosBankKassiOSUITests/CardTests/test_card_cvv_hiddenByDefault"
+    ],
+    "cardNumberFullyVisible": [
+      "ChaosBankKassiOSUITests/SecurityTests/test_card_number_isMaskedExceptTheLastFour"
+    ],
+    "cardToggleInvert": [
+      "ChaosBankKassiOSUITests/CardTests/test_card_freeze_showsFrozenBadge"
+    ],
+    "changePctSignFlipped": [
+      "ChaosBankKassiOSUITests/MarketsValueTests/test_assetDetail_agreesWithTheMarketRow"
+    ],
+    "controlActionNotWired": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_markets_cryptoSegment_switchesList"
+    ],
+    "currencySymbolPlacementIgnoresLocale": [
+      "ChaosBankKassiOSUITests/LocalizationTests/test_devMenu_germanLocale_putsTheCurrencySymbolLast"
+    ],
+    "deepLinkSkipsAuth": [
+      "ChaosBankKassiOSUITests/SecurityTests/test_deepLink_whileLocked_keepsTheAuthGate"
+    ],
+    "detailPriceOffset": [
+      "ChaosBankKassiOSUITests/MarketsValueTests/test_assetDetail_agreesWithTheMarketRow"
+    ],
+    "doubleCharge": [
+      "ChaosBankKassiOSUITests/ConcurrencyTests/test_transfer_rapidDoubleTapConfirm_debitsOnce"
+    ],
+    "estTotalIgnoresQty": [
+      "ChaosBankKassiOSUITests/OrderValueTests/test_order_estimatedTotal_isQuantityTimesPrice"
+    ],
+    "exchangeCreditsWrongAccount": [
+      "ChaosBankKassiOSUITests/ExchangeValueTests/test_exchange_movesMoneyBetweenTheRightAccounts"
+    ],
+    "exchangeDoubleSubmit": [
+      "ChaosBankKassiOSUITests/ExchangeTests/test_exchange_rapidDoubleTapExecute_exchangesOnlyOnce"
+    ],
+    "fieldEditNotCommitted": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_card_limitEdit_commitsToModel"
+    ],
+    "filterLeaksCategory": [
+      "ChaosBankKassiOSUITests/TransactionsTests/test_transactions_moneyInFilter_showsOnlyMoneyIn"
+    ],
+    "holdingValueUsesCost": [
+      "ChaosBankKassiOSUITests/PortfolioValueTests/test_portfolio_holdingValue_usesTheMarketPrice"
+    ],
+    "homeTotalOmitsAccount": [
+      "ChaosBankKassiOSUITests/HomeValueTests/test_home_total_equalsSumOfAccounts"
+    ],
+    "kycAcceptsExpiredDocument": [
+      "ChaosBankKassiOSUITests/KycTests/test_kyc_expiredDocument_isRejected"
+    ],
+    "kycBypassAllowsTransfer": [
+      "ChaosBankKassiOSUITests/KycTests/test_transfer_overKycThreshold_isBlockedWhileUnverified"
+    ],
+    "kycNameMismatchAccepted": [
+      "ChaosBankKassiOSUITests/KycTests/test_kyc_documentInAnotherName_isRejected"
+    ],
+    "kycSelfieMismatchAccepted": [
+      "ChaosBankKassiOSUITests/KycTests/test_kyc_mismatchedSelfie_isRejected"
+    ],
+    "kycStuckPending": [
+      "ChaosBankKassiOSUITests/KycTests/test_kyc_happyPath_verifiesTheIdentity",
+      "ChaosBankKassiOSUITests/KycTests/test_transfer_overKycThreshold_opensAfterVerifying"
+    ],
+    "labelNotFormatted": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_portfolio_total_isCurrencyFormatted"
+    ],
+    "limitExecutesAtMarket": [
+      "ChaosBankKassiOSUITests/OrderValueTests/test_order_limitEstimatedTotal_usesTheLimitPrice"
+    ],
+    "limitValidation": [
+      "ChaosBankKassiOSUITests/OrderTests/test_order_zeroQuantity_disablesReview"
+    ],
+    "listNotClearedOnReload": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_markets_switchingSegment_replacesList"
+    ],
+    "livePriceRace": [
+      "ChaosBankKassiOSUITests/ConcurrencyTests/test_order_referencePrice_staysAtTheCapturedPrice"
+    ],
+    "loanAprUnderstated": [
+      "ChaosBankKassiOSUITests/LoansValueTests/test_loans_monthlyPayment_matchesTheAdvertisedApr"
+    ],
+    "localeParse": [
+      "ChaosBankKassiOSUITests/LocalizationTests/test_transfer_amount_parsesThousandsSeparators"
+    ],
+    "numberGroupingIgnoresLocale": [
+      "ChaosBankKassiOSUITests/LocalizationTests/test_devMenu_germanLocale_groupsNumbersTheGermanWay"
+    ],
+    "orderDoubleSubmit": [
+      "ChaosBankKassiOSUITests/ConcurrencyTests/test_order_rapidDoubleTapPlace_buysOnce"
+    ],
+    "orderStuckPending": [
+      "ChaosBankKassiOSUITests/OrderTests/test_order_place_reportsFilled"
+    ],
+    "otpAcceptsAnyCode": [
+      "ChaosBankKassiOSUITests/SecurityTests/test_otp_wrongCode_isRejected"
+    ],
+    "otpNoLockout": [
+      "ChaosBankKassiOSUITests/SecurityTests/test_otp_threeWrongCodes_lockTheStep"
+    ],
+    "outputNotRecomputed": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_exchange_youGet_recomputesOnAmountChange"
+    ],
+    "paginationDup": [
+      "ChaosBankKassiOSUITests/TransactionsTests/test_transactions_loadMore_noDuplicateRows"
+    ],
+    "pinShownPlaintext": [
+      "ChaosBankKassiOSUITests/SecurityTests/test_card_showPin_keepsThePinMasked"
+    ],
+    "pnlPercentVsValue": [
+      "ChaosBankKassiOSUITests/PortfolioValueTests/test_portfolio_pnlPercent_isAgainstTheCostBasis"
+    ],
+    "pnlSign": [
+      "ChaosBankKassiOSUITests/PortfolioValueTests/test_portfolio_tslaLoss_isRenderedAsLoss"
+    ],
+    "priceMissingDecimals": [
+      "ChaosBankKassiOSUITests/LocalizationTests/test_markets_prices_keepTheirCents"
+    ],
+    "roundingDrift": [
+      "ChaosBankKassiOSUITests/ExchangeTests/test_exchange_creditedAmount_matchesDisplayedYouGet"
+    ],
+    "rowLocatorMissing": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_portfolio_holdingRow_hasLocator"
+    ],
+    "rowTapOpensWrongItem": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_markets_rowTap_opensTappedAsset"
+    ],
+    "searchTrimsNothing": [
+      "ChaosBankKassiOSUITests/LocalizationTests/test_transactions_search_ignoresSurroundingSpaces"
+    ],
+    "submitEnabledWhenInvalid": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_transfer_continueDisabledWhenInvalid"
+    ],
+    "successToastMissing": [
+      "ChaosBankKassiOSUITests/TransferTests/test_transfer_happyPath_completes"
+    ],
+    "switchChangeNotHandled": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_card_freeze_showsFrozenBadge"
+    ],
+    "syncLostUpdate": [
+      "ChaosBankKassiOSUITests/ConcurrencyTests/test_syncPlayground_concurrentIncrements_loseNothing"
+    ],
+    "todayChangeSignFlipped": [
+      "ChaosBankKassiOSUITests/HomeValueTests/test_home_todayChange_isAGainOfTheTotal"
+    ],
+    "toggleInitialStateNotBound": [
+      "ChaosBankKassiOSUITests/UIKitViewsTests/test_uikit_card_onlineToggle_reflectsModelOnLoad"
+    ],
+    "tokenInUserDefaults": [
+      "ChaosBankKassiOSUITests/SecurityTests/test_login_storesTheTokenInTheKeychain"
+    ],
+    "totalValueOmitsHolding": [
+      "ChaosBankKassiOSUITests/PortfolioValueTests/test_portfolio_total_equalsSumOfHoldings"
+    ],
+    "transferDebitsWrongAccount": [
+      "ChaosBankKassiOSUITests/TransferValueTests/test_transfer_debitsExactlyTheAmountFromEUR"
+    ],
+    "transferRoundsUp": [
+      "ChaosBankKassiOSUITests/TransferValueTests/test_transfer_debitsExactlyTheAmountFromEUR"
+    ],
+    "virtualCardShowsRealPan": [
+      "ChaosBankKassiOSUITests/SecurityTests/test_card_virtualCard_doesNotReuseTheRealNumber"
+    ],
+    "wrongA11yLabel": [
+      "ChaosBankKassiOSUITests/OrderTests/test_asset_buyButton_labelledBuy"
+    ],
+    "zeroAmountAccepted": [
+      "ChaosBankKassiOSUITests/TransferTests/test_transfer_zeroAmount_disablesContinue"
+    ]
+  }
+}

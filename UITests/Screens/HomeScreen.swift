@@ -30,9 +30,21 @@ final class HomeScreen: CBScreen {
 }
 
 /// The bottom tab bar (visible only once unlocked).
+/// The system tab bar. On iOS 27, after a sheet is dismissed, SwiftUI's `TabView`
+/// drops the identifiers of its `tabItem`s, so each tab falls back to its fixed
+/// title in the tab bar.
 final class TabBar: CBScreen {
-    lazy var home = button("tabBar.home")
-    lazy var markets = button("tabBar.markets")
-    lazy var portfolio = button("tabBar.portfolio")
-    lazy var card = button("tabBar.card")
+    lazy var home = tab("tabBar.home", title: "Home")
+    lazy var markets = tab("tabBar.markets", title: "Markets")
+    lazy var portfolio = tab("tabBar.portfolio", title: "Portfolio")
+    lazy var card = tab("tabBar.card", title: "Card")
+
+    private func tab(_ id: String, title: String) -> KassElement {
+        custom("tab '\(title)'") { [app] in
+            let byId = app.buttons[id]
+            if byId.exists { return byId }
+            let inTabBar = app.tabBars.buttons[title]
+            return inTabBar.exists ? inTabBar : app.buttons.matching(NSPredicate(format: "label == %@", title)).firstMatch
+        }
+    }
 }

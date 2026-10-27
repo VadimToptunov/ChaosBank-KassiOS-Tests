@@ -106,9 +106,24 @@ builds. The suite asserts *correct* behaviour, so:
     -destination 'platform=iOS Simulator,name=iPhone 17' CODE_SIGNING_ALLOWED=NO
   ```
 
-  Verified: the Order and Card tests go red under exactly their defects
-  (`wrongA11yLabel`, `limitValidation`, `orderStuckPending`, `cardToggleInvert`,
-  `cardCvvVisible`) — the dogfooding contract, proven end to end.
+- **Check every defect at once with `kassios-mutants`.** Each test that pins a
+  defect says so in its doc comment (`/// Catches \`successToastMissing\`.`).
+  `tools/gen_mutants.py` turns those lines into `mutants.json`, and KassiOS's
+  `kassios-mutants` runs each defect's tests with it injected and reports any
+  that stay green:
+
+  ```bash
+  xcodebuild build-for-testing -project ChaosBankKassiOS.xcodeproj \
+    -scheme ChaosBankKassiOSUITests -destination 'platform=iOS Simulator,name=iPhone 17' \
+    -derivedDataPath DerivedData CODE_SIGNING_ALLOWED=NO
+  swift build -c release --package-path vendor/KassiOS --product kassios-mutants
+  vendor/KassiOS/.build/release/kassios-mutants mutants.json --clean
+  ```
+
+  `KASS_DEST=<destination> python3 tools/gen_mutants.py > local.json` targets
+  another simulator. CI fails if `mutants.json` is out of date with the tests.
+  Last local run (KassiOS 1.8.0, iPhone 17, iOS 27): 71/71 green clean, 59 of 59
+  defects killed, about 70 minutes.
 
 - **Run the same suite against ChaosBank-Server.** `TEST_RUNNER_CB_BACKEND=<url>`
   launches the app with `-ChaosBankBackend <url>`, so the tests hit
