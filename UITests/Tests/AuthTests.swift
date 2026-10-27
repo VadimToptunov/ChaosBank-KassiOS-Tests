@@ -27,7 +27,7 @@ final class AuthTests: CBTestCase {
             auth.webSheet.within(timeout: 15).assertExists()
             auth.webUsername.within(timeout: 15).typeText("tester")
             auth.webPassword.typeText("hunter2")
-            auth.submitWebLogin()
+            auth.webSubmit.tap()   // KassiOS dismisses the keyboard and its accessory bar first
             auth.codeField.within(timeout: 15).typeText("424242")      // OTP, auto-submits
             auth.codeField.within(timeout: 15).typeText("135790")      // passcode, auto-submits
         }

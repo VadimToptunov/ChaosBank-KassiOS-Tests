@@ -52,7 +52,7 @@ final class SecurityTests: CBTestCase {
             auth.loginButton.tap()
             auth.webUsername.within(timeout: 15).typeText("tester")
             auth.webPassword.typeText("hunter2")
-            auth.submitWebLogin()
+            auth.webSubmit.tap()   // KassiOS dismisses the keyboard and its accessory bar first
             auth.codeField.within(timeout: 15).assertExists()
         }
     }

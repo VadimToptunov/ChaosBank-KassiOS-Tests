@@ -8,8 +8,8 @@ import XCTest
 /// open = price ÷ (1 + change%).
 final class MarketsValueTests: CBTestCase {
 
-    private func impliedOpen(price priceId: String, change changeId: String) throws -> Double {
-        let labels = try snapshotLabels([priceId, changeId])
+    private func impliedOpen(_ screen: KassScreen, price priceId: String, change changeId: String) throws -> Double {
+        let labels = screen.readTexts([priceId, changeId])
         let price = try XCTUnwrap(numbers(in: try XCTUnwrap(labels[priceId])).first)
         let change = try XCTUnwrap(numbers(in: try XCTUnwrap(labels[changeId])).first)
         return price / (1 + change / 100)
@@ -23,12 +23,12 @@ final class MarketsValueTests: CBTestCase {
         var rowOpen = Double.nan
         onScreen(MarketsScreen.self) { markets in
             markets.change("AAPL").assertExists()
-            rowOpen = (try? impliedOpen(price: "markets.asset.AAPL.price", change: "markets.asset.AAPL.change")) ?? .nan
+            rowOpen = (try? impliedOpen(markets, price: "markets.asset.AAPL.price", change: "markets.asset.AAPL.change")) ?? .nan
             markets.assetRow("AAPL").tap()
         }
         onScreen(AssetScreen.self) { asset in
             asset.change.assertExists()
-            let detailOpen = (try? impliedOpen(price: "asset.price", change: "asset.change")) ?? .nan
+            let detailOpen = (try? impliedOpen(asset, price: "asset.price", change: "asset.change")) ?? .nan
             // Display rounding (cents, hundredths of a percent) moves the
             // implied open by well under 0.03%.
             XCTAssertEqual(detailOpen, rowOpen, accuracy: rowOpen * 0.0003,

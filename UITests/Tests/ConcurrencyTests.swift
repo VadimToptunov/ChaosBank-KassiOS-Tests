@@ -27,9 +27,7 @@ final class ConcurrencyTests: CBTestCase {
             transfer.recipientField.typeText("Alex")
             transfer.amountField.typeText("100")
             transfer.continueButton.tap()
-            let confirm = transfer.confirmButton.resolve()
-            confirm.tap()
-            confirm.tap()
+            transfer.confirmButton.rapidTap(times: 2)
             transfer.confirmButton.within(timeout: 30).waitUntilGone()
         }
         onScreen(HomeScreen.self) { home in
@@ -54,9 +52,7 @@ final class ConcurrencyTests: CBTestCase {
         onScreen(AssetScreen.self) { $0.buyButton.tap() }
         onScreen(OrderScreen.self) { order in
             order.reviewButton.tap()
-            let place = order.placeButton.resolve()
-            place.tap()
-            place.tap()
+            order.placeButton.rapidTap(times: 2)
             // A filled order pops the ticket.
             order.reviewButton.within(timeout: 30).waitUntilGone()
         }
@@ -79,10 +75,8 @@ final class ConcurrencyTests: CBTestCase {
         onScreen(MarketsScreen.self) { $0.assetRow("AAPL").tap() }
         onScreen(AssetScreen.self) { $0.buyButton.tap() }
         onScreen(OrderScreen.self) { order in
-            let first = order.refPrice.number()
-            // Several 700 ms ticks: a live price would have moved by now.
-            RunLoop.current.run(until: Date().addingTimeInterval(3))
-            XCTAssertEqual(order.refPrice.number(), first, "reference price should not tick")
+            // Several 700 ms ticks: a live price would move within this window.
+            order.refPrice.assertUnchanged(for: 3)
         }
     }
 
