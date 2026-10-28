@@ -117,13 +117,16 @@ builds. The suite asserts *correct* behaviour, so:
     -scheme ChaosBankKassiOSUITests -destination 'platform=iOS Simulator,name=iPhone 17' \
     -derivedDataPath DerivedData CODE_SIGNING_ALLOWED=NO
   swift build -c release --package-path vendor/KassiOS --product kassios-mutants
-  vendor/KassiOS/.build/release/kassios-mutants mutants.json --clean
+  vendor/KassiOS/.build/release/kassios-mutants mutants.json --clean --parallel 3
   ```
 
+  `--parallel 3` runs three defects at once, each on a clone of the simulator.
   `KASS_DEST=<destination> python3 tools/gen_mutants.py > local.json` targets
   another simulator. CI fails if `mutants.json` is out of date with the tests.
-  Last local run (KassiOS 1.8.0, iPhone 17, iOS 27): 71/71 green clean, 59 of 59
-  defects killed, about 70 minutes.
+  Last local run (KassiOS 1.9.0, iPhone 17, iOS 27, 10-core Mac): 59 of 59
+  defects killed in about 28 minutes on 3 simulators, against about 70 minutes
+  one at a time. CI runs them one at a time: on GitHub's 3-core macOS runner,
+  `--parallel 2` was slower than sequential.
 
 - **Run the same suite against ChaosBank-Server.** `TEST_RUNNER_CB_BACKEND=<url>`
   launches the app with `-ChaosBankBackend <url>`, so the tests hit

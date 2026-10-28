@@ -51,7 +51,8 @@ jobs:
             2>&1 | tee xcodebuild.log | tail -120
 
   # Every defect the suite claims to catch must turn its tests red, one defect at
-  # a time. The defect → tests map is generated from the tests' "Catches `id`"
+  # a time. Not --parallel: on this 3-core runner two simulators made each run
+  # twice as slow, and two load-sensitive tests stayed green with their defect on. The defect → tests map is generated from the tests' "Catches `id`"
   # doc lines (tools/gen_mutants.py), so it can't drift from the code. Runs in
   # parallel with the clean run.
   mutants:
@@ -107,4 +108,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: mutant-logs
-          path: mutant-logs
+          path: mutant-logs/*.log
